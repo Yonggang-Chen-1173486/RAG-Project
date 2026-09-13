@@ -1,7 +1,7 @@
 [project]
 name = "comp693-26s2-project-yonggang-chen-1157968"
 version = "0.1.0"
-description = "Add your description here"
+description = "Aventro Motors RAG system"
 readme = "README.md"
 authors = [
     { name = "Yonggang-Chen-1173486", email = "Yonggang.Chen@lincolnuni.ac.nz" }
@@ -28,12 +28,22 @@ dependencies = [
     "unstructured[pptx]>=0.18.0",
 ]
 
-[project.scripts]
-comp693-26s2-project-yonggang-chen-1157968 = "comp693_26s2_project_yonggang_chen_1157968:main"
-
+# ============================================================
+# Build system: 用 setuptools 而不是 uv_build
+# ============================================================
 [build-system]
-requires = ["uv_build>=0.12.1,<0.13.0"]
-build-backend = "uv_build"
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
 
+# ============================================================
+# 告诉 setuptools: 包在 src/ 里, 只包含 rag*
+# ============================================================
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["rag*"]
+
+# ============================================================
+# uv-specific 配置 (保留)
+# ============================================================
 [tool.uv.sources]
 en-core-web-sm = { url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl" }
