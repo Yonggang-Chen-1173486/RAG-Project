@@ -1,0 +1,109 @@
+{
+  "by_pipeline": {
+    "advanced": {
+      "in_domain": {
+        "total": 20,
+        "correct": 18,
+        "incomplete": 1,
+        "abstain": 1,
+        "hallucination": 0,
+        "unknown": 0,
+        "accuracy": 0.9,
+        "partial_rate": 0.05,
+        "combined_accuracy": 0.95,
+        "avg_top_score": 0.85487
+      },
+      "out_of_domain": {
+        "total": 20,
+        "correct": 0,
+        "incomplete": 0,
+        "abstain": 20,
+        "hallucination": 0,
+        "unknown": 0,
+        "abstain_rate": 1.0,
+        "avg_top_score": 0.14411000000000002
+      },
+      "overall": {
+        "total": 40,
+        "correct": 18,
+        "incomplete": 1,
+        "abstain": 21,
+        "hallucination": 0,
+        "unknown": 0,
+        "hallucination_rate": 0.0,
+        "avg_top_score": 0.49949000000000005,
+        "avg_latency_sec": 4.1792
+      }
+    },
+    "flexible": {
+      "in_domain": {
+        "total": 20,
+        "correct": 18,
+        "incomplete": 1,
+        "abstain": 1,
+        "hallucination": 0,
+        "unknown": 0,
+        "accuracy": 0.9,
+        "partial_rate": 0.05,
+        "combined_accuracy": 0.95,
+        "avg_top_score": 0.85487
+      },
+      "out_of_domain": {
+        "total": 20,
+        "correct": 0,
+        "incomplete": 0,
+        "abstain": 20,
+        "hallucination": 0,
+        "unknown": 0,
+        "abstain_rate": 1.0,
+        "avg_top_score": 0.14411000000000002
+      },
+      "overall": {
+        "total": 40,
+        "correct": 18,
+        "incomplete": 1,
+        "abstain": 21,
+        "hallucination": 0,
+        "unknown": 0,
+        "hallucination_rate": 0.0,
+        "avg_top_score": 0.49949000000000005,
+        "avg_latency_sec": 4.195125
+      }
+    },
+    "simple": {
+      "in_domain": {
+        "total": 20,
+        "correct": 18,
+        "incomplete": 1,
+        "abstain": 1,
+        "hallucination": 0,
+        "unknown": 0,
+        "accuracy": 0.9,
+        "partial_rate": 0.05,
+        "combined_accuracy": 0.95,
+        "avg_top_score": 0.85487
+      },
+      "out_of_domain": {
+        "total": 20,
+        "correct": 0,
+        "incomplete": 0,
+        "abstain": 20,
+        "hallucination": 0,
+        "unknown": 0,
+        "abstain_rate": 1.0,
+        "avg_top_score": 0.14411000000000002
+      },
+      "overall": {
+        "total": 40,
+        "correct": 18,
+        "incomplete": 1,
+        "abstain": 21,
+        "hallucination": 0,
+        "unknown": 0,
+        "hallucination_rate": 0.0,
+        "avg_top_score": 0.49949000000000005,
+        "avg_latency_sec": 3.962375
+      }
+    }
+  }
+}

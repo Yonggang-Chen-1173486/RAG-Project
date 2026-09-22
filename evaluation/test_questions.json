@@ -1,0 +1,262 @@
+[
+  {
+    "id": "q001",
+    "type": "in_domain",
+    "source_file": "About Aventro Motors.docx",
+    "question": "When was Aventro Motors founded and where?",
+    "expected_answer": "Aventro Motors was founded in 2011 in Gurugram, Haryana."
+  },
+  {
+    "id": "q002",
+    "type": "in_domain",
+    "source_file": "About Aventro Motors.docx",
+    "question": "Who is the Founder and CEO of Aventro Motors?",
+    "expected_answer": "Amit Bansal"
+  },
+  {
+    "id": "q003",
+    "type": "in_domain",
+    "source_file": "Adaptive Cruise Control (ACC).docx",
+    "question": "What sensors does Adaptive Cruise Control use to detect vehicles ahead?",
+    "expected_answer": "Radar sensors, lidar sensors or cameras, and an ECU (Electronic Control Unit)."
+  },
+  {
+    "id": "q004",
+    "type": "in_domain",
+    "source_file": "Adaptive Cruise Control (ACC).docx",
+    "question": "What are the advantages of Adaptive Cruise Control?",
+    "expected_answer": "Safety (reduces risk of rear-end collisions), Convenience (less driver fatigue on long trips and in traffic jams), and Efficiency (optimized speed and braking can improve fuel economy)."
+  },
+  {
+    "id": "q005",
+    "type": "in_domain",
+    "source_file": "Adjusting the Seat Positions.html",
+    "question": "What is the ideal backrest angle when adjusting the seat?",
+    "expected_answer": "Slightly reclined for comfort, but never more than 30 degrees from upright."
+  },
+  {
+    "id": "q006",
+    "type": "in_domain",
+    "source_file": "Adjusting the Seat Positions.html",
+    "question": "Where is the seat adjustment lever typically located?",
+    "expected_answer": "Under the front edge of the seat."
+  },
+  {
+    "id": "q007",
+    "type": "in_domain",
+    "source_file": "Adjusting the Steering Wheel.html",
+    "question": "What is the minimum recommended distance between your chest and the steering wheel?",
+    "expected_answer": "At least 25 cm (10 inches)."
+  },
+  {
+    "id": "q008",
+    "type": "in_domain",
+    "source_file": "Adjusting the Steering Wheel.html",
+    "question": "What types of steering wheel adjustments are available in Aventro Motors vehicles?",
+    "expected_answer": "Tilt adjustment (moves the wheel up and down) and telescopic adjustment (moves the wheel closer or farther from the driver)."
+  },
+  {
+    "id": "q009",
+    "type": "in_domain",
+    "source_file": "Advice for Pregnant Women While in a Car.md",
+    "question": "How should a pregnant woman position the lap belt of her seat belt?",
+    "expected_answer": "Under the belly, low on the hips, and across the upper thighs. It should never go across the stomach."
+  },
+  {
+    "id": "q010",
+    "type": "in_domain",
+    "source_file": "Advice for Pregnant Women While in a Car.md",
+    "question": "How often should a pregnant woman take breaks on long car journeys?",
+    "expected_answer": "Every 60 to 90 minutes."
+  },
+  {
+    "id": "q011",
+    "type": "in_domain",
+    "source_file": "Aventro Awards & Recognitions.md",
+    "question": "What award did Aventro Motors win in 2024 for customer service?",
+    "expected_answer": "Best Customer Service Experience at the National Auto Customer Choice Awards 2024."
+  },
+  {
+    "id": "q012",
+    "type": "in_domain",
+    "source_file": "Aventro Awards & Recognitions.md",
+    "question": "What award did Aventro Motors win in 2023 for sustainability?",
+    "expected_answer": "Eco-Friendly Automaker of the Year at the Clean Mobility India Awards 2023."
+  },
+  {
+    "id": "q013",
+    "type": "in_domain",
+    "source_file": "Aventro Glory SUV.pptx",
+    "question": "What is the price of the Aventro Glory Electric ZX variant?",
+    "expected_answer": "21.5 Lakh"
+  },
+  {
+    "id": "q014",
+    "type": "in_domain",
+    "source_file": "Aventro Glory SUV.pptx",
+    "question": "What is the seating capacity of the Aventro Glory SUV?",
+    "expected_answer": "5 seats"
+  },
+  {
+    "id": "q015",
+    "type": "in_domain",
+    "source_file": "Aventro Grand SUV.pptx",
+    "question": "How many seats does the Aventro Grand SUV have?",
+    "expected_answer": "7-seater"
+  },
+  {
+    "id": "q016",
+    "type": "in_domain",
+    "source_file": "Aventro Grand SUV.pptx",
+    "question": "What is the boot space of the Aventro Grand SUV?",
+    "expected_answer": "Up to 700 litres"
+  },
+  {
+    "id": "q017",
+    "type": "in_domain",
+    "source_file": "Aventro Bolt Sedan.pdf",
+    "question": "What is the boot space of the Aventro Bolt Sedan?",
+    "expected_answer": "470 litres (approx.)"
+  },
+  {
+    "id": "q018",
+    "type": "in_domain",
+    "source_file": "Aventro Bolt Sedan.pdf",
+    "question": "What are the available fuel types for the Aventro Bolt Sedan?",
+    "expected_answer": "Petrol, Diesel, Electric, and Hybrid."
+  },
+  {
+    "id": "q019",
+    "type": "in_domain",
+    "source_file": "Aventro Edge Sedan.pdf",
+    "question": "What is the seating capacity of the Aventro Edge Sedan?",
+    "expected_answer": "5 seats"
+  },
+  {
+    "id": "q020",
+    "type": "in_domain",
+    "source_file": "Aventro Edge Sedan.pdf",
+    "question": "What are the available fuel options for the Aventro Edge Sedan?",
+    "expected_answer": "Petrol, Diesel, Electric, and Hybrid."
+  },
+  {
+    "id": "o001",
+    "type": "out_of_domain",
+    "question": "What is the capital of France?",
+    "expected_answer": null
+  },
+  {
+    "id": "o002",
+    "type": "out_of_domain",
+    "question": "Who won the 2024 FIFA World Cup?",
+    "expected_answer": null
+  },
+  {
+    "id": "o003",
+    "type": "out_of_domain",
+    "question": "How do I make pasta carbonara?",
+    "expected_answer": null
+  },
+  {
+    "id": "o004",
+    "type": "out_of_domain",
+    "question": "What is the price of a Tesla Model 3 in 2024?",
+    "expected_answer": null
+  },
+  {
+    "id": "o005",
+    "type": "out_of_domain",
+    "question": "Who wrote the novel 'Pride and Prejudice'?",
+    "expected_answer": null
+  },
+  {
+    "id": "o006",
+    "type": "out_of_domain",
+    "question": "What is the tallest mountain in the world?",
+    "expected_answer": null
+  },
+  {
+    "id": "o007",
+    "type": "out_of_domain",
+    "question": "How does photosynthesis work in plants?",
+    "expected_answer": null
+  },
+  {
+    "id": "o008",
+    "type": "out_of_domain",
+    "question": "What is the capital of Japan?",
+    "expected_answer": null
+  },
+  {
+    "id": "o009",
+    "type": "out_of_domain",
+    "question": "When was the first iPhone released?",
+    "expected_answer": null
+  },
+  {
+    "id": "o010",
+    "type": "out_of_domain",
+    "question": "What is the chemical formula for water?",
+    "expected_answer": null
+  },
+  {
+    "id": "o011",
+    "type": "out_of_domain",
+    "question": "Who is the current CEO of Apple?",
+    "expected_answer": null
+  },
+  {
+    "id": "o012",
+    "type": "out_of_domain",
+    "question": "What is the largest ocean on Earth?",
+    "expected_answer": null
+  },
+  {
+    "id": "o013",
+    "type": "out_of_domain",
+    "question": "How many bones are in the human body?",
+    "expected_answer": null
+  },
+  {
+    "id": "o014",
+    "type": "out_of_domain",
+    "question": "What is the boiling point of water at sea level?",
+    "expected_answer": null
+  },
+  {
+    "id": "o015",
+    "type": "out_of_domain",
+    "question": "Who painted the Mona Lisa?",
+    "expected_answer": null
+  },
+  {
+    "id": "o016",
+    "type": "out_of_domain",
+    "question": "What is the speed of light?",
+    "expected_answer": null
+  },
+  {
+    "id": "o017",
+    "type": "out_of_domain",
+    "question": "What is the currency of Japan?",
+    "expected_answer": null
+  },
+  {
+    "id": "o018",
+    "type": "out_of_domain",
+    "question": "How many continents are there on Earth?",
+    "expected_answer": null
+  },
+  {
+    "id": "o019",
+    "type": "out_of_domain",
+    "question": "What is the tallest building in the world?",
+    "expected_answer": null
+  },
+  {
+    "id": "o020",
+    "type": "out_of_domain",
+    "question": "Who discovered penicillin?",
+    "expected_answer": null
+  }
+]

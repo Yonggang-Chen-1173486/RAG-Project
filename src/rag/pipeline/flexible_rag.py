@@ -5,32 +5,48 @@ Behavior:
   - if relevant chunks were retrieved -> answer from context
   - otherwise -> state that no relevant info was found, then answer from
     the LLM's general knowledge
+
+Returns:
+  A dict with keys: "answer" (str) and "sources" (list of dicts).
 """
-from rag.config import DEFAULT_SCORE_THRESHOLD
+from typing import Any, Dict, List
+
+from rag.config import DEFAULT_SCORE_THRESHOLD, DEFAULT_TOP_K
 from rag.retrieval.retriever import RAGRetriever
 from rag.generation.llm import GroqLLM
+
+
+def _build_sources(results: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """Convert retriever results into a sources list (source, score, preview)."""
+    return [
+        {
+            "source": doc["metadata"].get(
+                "source_file", doc["metadata"].get("source", "unknown")
+            ),
+            "page": doc["metadata"].get("page", "unknown"),
+            "score": doc["similarity_score"],
+            "preview": doc["content"][:120] + "...",
+        }
+        for doc in results
+    ]
 
 
 def rag_flexible(
     query: str,
     retriever: RAGRetriever,
     llm: GroqLLM,
-    top_k: int = 3,
+    top_k: int = DEFAULT_TOP_K,
     min_score: float = DEFAULT_SCORE_THRESHOLD,
-) -> str:
+) -> Dict[str, Any]:
     """
     Retrieve context and generate an answer; fall back to general knowledge
     if no relevant context is found.
 
-    Args:
-        query: User question.
-        retriever: RAGRetriever instance.
-        llm: GroqLLM instance.
-        top_k: Number of chunks to retrieve.
-        min_score: Minimum similarity score for a chunk to be considered relevant.
-
     Returns:
-        Answer string.
+        {
+          "answer": str,
+          "sources": list of {"source", "page", "score", "preview"}
+        }
     """
     results = retriever.retrieve(query, top_k=top_k, score_threshold=min_score)
 
@@ -55,5 +71,9 @@ def rag_flexible(
         Question: {query}
         Answer:"""
 
-    response = llm.llm.invoke([prompt])
-    return response.content
+    answer = llm.invoke(prompt)
+
+    return {
+        "answer": answer,
+        "sources": _build_sources(results) if results else [],
+    }

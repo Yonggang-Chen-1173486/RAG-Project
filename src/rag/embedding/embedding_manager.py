@@ -1,57 +1,56 @@
 """
-Embedding manager: converts text into vector embeddings.
+Embedding generation for the Aventro Motors RAG system.
 
-Uses a local SentenceTransformer model (free, no API key needed).
+Uses Google Generative AI (Gemini) for embeddings via LangChain integration.
 """
+import logging
 from typing import List
 
 import numpy as np
-from sentence_transformers import SentenceTransformer
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
-from rag.config import EMBEDDING_MODEL_NAME
+from rag.config import EMBEDDING_MODEL_NAME, EMBEDDING_DIMENSION
+
+logger = logging.getLogger(__name__)
 
 
 class EmbeddingManager:
-    """Handles document embedding generation using SentenceTransformer."""
+    """Handles document embedding generation using Google Gemini."""
 
     def __init__(self, model_name: str = EMBEDDING_MODEL_NAME):
-        """
-        Initialize the embedding manager.
-
-        Args:
-            model_name: HuggingFace model name for sentence embeddings.
-        """
         self.model_name = model_name
-        self.model: SentenceTransformer | None = None
+        self.embeddings = None
         self._load_model()
 
-    def _load_model(self) -> None:
-        """Load the SentenceTransformer model."""
+    def _load_model(self):
+        """Initialize the Google Generative AI embeddings client."""
         try:
-            print(f"Loading embedding model: {self.model_name}")
-            self.model = SentenceTransformer(self.model_name)
-            print(
-                f"Model loaded successfully. "
-                f"Embedding dimension: {self.model.get_embedding_dimension()}"
+            logger.info("Loading embedding model: %s", self.model_name)
+            # 初始化 LangChain 的 Google Embeddings 客户端
+            # 会自动从环境变量 GOOGLE_API_KEY 读取密钥
+            self.embeddings = GoogleGenerativeAIEmbeddings(
+                model=self.model_name,
+                output_dimensionality=EMBEDDING_DIMENSION,  # 指定输出维度
+            )
+            # 做个简单的测试调用，确保能连上 API
+            test_vector = self.embeddings.embed_query("test")
+            logger.info(
+                "Model loaded successfully. Embedding dimension: %d",
+                len(test_vector)
             )
         except Exception as e:
-            print(f"Error loading model {self.model_name}: {e}")
+            logger.error("Error loading model %s: %s", self.model_name, e)
             raise
 
     def generate_embeddings(self, texts: List[str]) -> np.ndarray:
-        """
-        Generate embeddings for a list of texts.
-
-        Args:
-            texts: List of text strings to embed.
-
-        Returns:
-            numpy array of shape (len(texts), embedding_dim).
-        """
-        if not self.model:
+        """Generate embeddings for a list of texts."""
+        if not self.embeddings:
             raise ValueError("Model not loaded")
 
-        print(f"Generating embeddings for {len(texts)} texts...")
-        embeddings = self.model.encode(texts, show_progress_bar=True)
-        print(f"Generated embeddings with shape: {embeddings.shape}")
+        logger.info("Generating embeddings for %d texts...", len(texts))
+        # LangChain 的 embed_documents 会处理批量请求
+        embeddings_list = self.embeddings.embed_documents(texts)
+        embeddings = np.array(embeddings_list)
+        
+        logger.info("Generated embeddings with shape: %s", embeddings.shape)
         return embeddings

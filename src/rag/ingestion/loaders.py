@@ -1,13 +1,7 @@
 """
 Document loaders for the Aventro Motors RAG system.
-
-This module is responsible ONLY for:
-  - deciding which file types are supported
-  - constructing the right LangChain loader per file
-  - walking a directory and returning a list of LangChain Documents
-
-It does NOT do splitting, embedding, or storage.
 """
+import logging
 from pathlib import Path
 from typing import List
 
@@ -23,11 +17,9 @@ from langchain_core.documents import Document
 
 from rag.config import AVENTRO_DATA_DIR
 
+logger = logging.getLogger(__name__)
 
-# ============================================================
-# Supported file types -> LangChain loader classes
-# ============================================================
-# This dict is the single source of truth for supported extensions.
+
 LOADER_BY_EXTENSION = {
     ".pdf": PyPDFLoader,
     ".docx": Docx2txtLoader,
@@ -42,9 +34,6 @@ LOADER_BY_EXTENSION = {
 SUPPORTED_EXTENSIONS = set(LOADER_BY_EXTENSION)
 
 
-# ============================================================
-# Loader construction
-# ============================================================
 def build_loader(file_path: Path):
     """Build the appropriate LangChain loader for a given file path."""
     extension = file_path.suffix.lower()
@@ -53,7 +42,6 @@ def build_loader(file_path: Path):
 
     loader_class = LOADER_BY_EXTENSION[extension]
 
-    # Some loaders need extra args
     if loader_class is CSVLoader:
         return loader_class(file_path=str(file_path), encoding="utf-8")
     if loader_class is TextLoader:
@@ -64,15 +52,11 @@ def build_loader(file_path: Path):
     return loader_class(str(file_path))
 
 
-# ============================================================
-# Single file loading
-# ============================================================
 def load_file(file_path: Path, root_directory: Path) -> List[Document]:
     """Load one file and enrich its metadata."""
     loader = build_loader(file_path)
     documents = loader.load()
 
-    # Drop empty docs
     documents = [
         doc for doc in documents
         if doc.page_content and doc.page_content.strip()
@@ -90,16 +74,8 @@ def load_file(file_path: Path, root_directory: Path) -> List[Document]:
     return documents
 
 
-# ============================================================
-# Directory-level loading (main entry point)
-# ============================================================
 def process_all_documents(data_directory=None) -> List[Document]:
-    """
-    Walk a directory, load every supported file, and return all Documents.
-
-    Args:
-        data_directory: Directory to scan. Defaults to config.AVENTRO_DATA_DIR.
-    """
+    """Walk a directory, load every supported file, and return all Documents."""
     if data_directory is None:
         data_directory = AVENTRO_DATA_DIR
 
@@ -112,16 +88,16 @@ def process_all_documents(data_directory=None) -> List[Document]:
         if file_path.is_file() and file_path.suffix.lower() in SUPPORTED_EXTENSIONS
     )
 
-    print(f"Found {len(files)} supported files to process")
+    logger.info("Found %d supported files to process", len(files))
 
     for file_path in files:
-        print(f"\nProcessing: {file_path.relative_to(data_dir)}")
+        logger.debug("Processing: %s", file_path.relative_to(data_dir))
         try:
             documents = load_file(file_path, data_dir)
             all_documents.extend(documents)
-            print(f"  Loaded {len(documents)} document(s)")
+            logger.debug("  Loaded %d document(s)", len(documents))
         except Exception as e:
-            print(f"  Error: {e}")
+            logger.error("  Error loading %s: %s", file_path, e)
 
-    print(f"\nTotal documents loaded: {len(all_documents)}")
+    logger.info("Total documents loaded: %d", len(all_documents))
     return all_documents

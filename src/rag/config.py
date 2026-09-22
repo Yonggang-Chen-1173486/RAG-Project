@@ -38,8 +38,8 @@ CHUNK_OVERLAP = 200
 # ============================================================
 # Embedding
 # ============================================================
-EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"
-EMBEDDING_DIMENSION = 384  # for all-MiniLM-L6-v2
+EMBEDDING_MODEL_NAME = "gemini-embedding-001"
+EMBEDDING_DIMENSION = 768  # for gemini-embedding-001
 
 
 # ============================================================
@@ -53,7 +53,7 @@ CHROMA_PERSIST_DIR = str(VECTOR_STORE_DIR)
 # Retrieval
 # ============================================================
 DEFAULT_TOP_K = 5
-DEFAULT_SCORE_THRESHOLD = 0.3
+DEFAULT_SCORE_THRESHOLD = 0.7
 
 
 # ============================================================
@@ -62,3 +62,8 @@ DEFAULT_SCORE_THRESHOLD = 0.3
 GROQ_MODEL_NAME = "Qwen/Qwen3.8-27B"
 GROQ_TEMPERATURE = 0.1
 GROQ_MAX_TOKENS = 1024
+
+# ============================================================
+# Logging
+# ============================================================
+DEFAULT_LOG_LEVEL = "INFO"

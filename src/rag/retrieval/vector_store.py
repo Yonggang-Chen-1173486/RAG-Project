@@ -1,23 +1,17 @@
 """
 ChromaDB-backed vector store for the Aventro Motors RAG system.
-
-Responsibility:
-  - manage a persistent ChromaDB client + collection
-  - provide an add_documents(documents, embeddings) method
-  - expose the underlying collection for querying
-
-It does NOT:
-  - generate embeddings (that's embedding_manager.py)
-  - decide when to index (that's indexer.py)
-  - run retrieval (that's retriever.py)
 """
+import logging
 import os
+import uuid
 from typing import Any, List
 
 import chromadb
 import numpy as np
 
 from rag.config import CHROMA_COLLECTION_NAME, CHROMA_PERSIST_DIR
+
+logger = logging.getLogger(__name__)
 
 
 class VectorStore:
@@ -47,29 +41,21 @@ class VectorStore:
                     "hnsw:space": "cosine",
                 },
             )
-            print(f"Vector store initialized. Collection: {self.collection_name}")
-            print(f"Existing documents in collection: {self.collection.count()}")
+            logger.info("Vector store initialized. Collection: %s", self.collection_name)
+            logger.info("Existing documents in collection: %d", self.collection.count())
 
         except Exception as e:
-            print(f"Error initializing vector store: {e}")
+            logger.error("Error initializing vector store: %s", e)
             raise
 
     def add_documents(self, documents: List[Any], embeddings: np.ndarray):
-        """
-        Add documents and their embeddings to the vector store.
-
-        Args:
-            documents: List of LangChain Documents.
-            embeddings: Corresponding embeddings (numpy array, shape N x D).
-        """
+        """Add documents and their embeddings to the vector store."""
         if len(documents) != len(embeddings):
             raise ValueError(
                 "Number of documents must match number of embeddings"
             )
 
-        print(f"Adding {len(documents)} documents to vector store...")
-
-        import uuid  # local import — only needed here
+        logger.info("Adding %d documents to vector store...", len(documents))
 
         ids: List[str] = []
         metadatas: List[dict] = []
@@ -95,9 +81,9 @@ class VectorStore:
                 metadatas=metadatas,
                 documents=documents_text,
             )
-            print(f"Successfully added {len(documents)} documents to vector store")
-            print(f"Total documents in collection: {self.collection.count()}")
+            logger.info("Successfully added %d documents to vector store", len(documents))
+            logger.info("Total documents in collection: %d", self.collection.count())
 
         except Exception as e:
-            print(f"Error adding documents to vector store: {e}")
+            logger.error("Error adding documents to vector store: %s", e)
             raise

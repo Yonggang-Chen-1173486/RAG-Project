@@ -5,7 +5,6 @@ Features (all in one class, for convenience):
   - retrieval + generation
   - source citations with preview
   - confidence score (top similarity)
-  - optional "streaming" simulation (prints the prompt slowly)
   - optional answer summarization (a second LLM call)
   - query history
 
@@ -13,15 +12,15 @@ It does NOT:
   - initialize the retriever or the LLM (the caller does that)
   - persist history to disk (in-memory only)
 """
-import time
 from typing import Any, Dict, List
+
 from rag.config import DEFAULT_SCORE_THRESHOLD
 from rag.retrieval.retriever import RAGRetriever
 from rag.generation.llm import GroqLLM
 
 
 class AdvancedRAGPipeline:
-    """RAG pipeline with citations, confidence, history, and optional extras."""
+    """RAG pipeline with citations, confidence, and history."""
 
     def __init__(self, retriever: RAGRetriever, llm: GroqLLM):
         self.retriever = retriever
@@ -33,17 +32,15 @@ class AdvancedRAGPipeline:
         question: str,
         top_k: int = 5,
         min_score: float = DEFAULT_SCORE_THRESHOLD,
-        stream: bool = False,
         summarize: bool = False,
     ) -> Dict[str, Any]:
         """
-        Run a full RAG query with optional streaming and summarization.
+        Run a full RAG query with optional summarization.
 
         Args:
             question: User question.
             top_k: Number of chunks to retrieve.
             min_score: Minimum similarity score to keep a chunk.
-            stream: If True, print the prompt slowly (visual simulation only).
             summarize: If True, also ask the LLM for a 2-sentence summary.
 
         Returns:
@@ -72,24 +69,19 @@ class AdvancedRAGPipeline:
                 for doc in results
             ]
 
-            # 2. Optional "streaming" simulation (prints the prompt, not the answer)
+            # 2. Build prompt
             prompt = (
-                f"Use the following context to answer the question concisely.\n"
+                f"Use ONLY the following context to answer the question.\n"
+                f"If the context does NOT contain enough information to answer the question,\n"
+                f'respond with exactly: "I couldn\'t find relevant information in the Aventro Motors documents to answer this question."\n'
+                f"Do NOT use your general knowledge.\n\n"
                 f"Context:\n{context}\n\n"
                 f"Question: {question}\n\n"
                 f"Answer:"
             )
 
-            if stream:
-                print("Streaming answer:")
-                for i in range(0, len(prompt), 80):
-                    print(prompt[i:i + 80], end="", flush=True)
-                    time.sleep(0.05)
-                print()
-
             # 3. Generate
-            response = self.llm.invoke([prompt])
-            answer = response.content
+            answer = self.llm.invoke(prompt)
 
         # 4. Build citations
         citations = [
@@ -106,8 +98,7 @@ class AdvancedRAGPipeline:
         summary = None
         if summarize and answer:
             summary_prompt = f"Summarize the following answer in 2 sentences:\n{answer}"
-            summary_resp = self.llm.invoke([summary_prompt])
-            summary = summary_resp.content
+            summary = self.llm.invoke(summary_prompt)
 
         # 6. Store history
         self.history.append({
