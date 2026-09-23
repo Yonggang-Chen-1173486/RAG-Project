@@ -87,8 +87,47 @@ class MultiRetriever:
 # ============================================================
 # Cached initialization (main index only — user index is per-session)
 # ============================================================
+def ensure_vector_store():
+    """Build the vector store from source documents if the collection is empty.
+
+    This runs on first startup (e.g. on Streamlit Cloud, where the
+    persisted ChromaDB directory is not committed to Git).
+    """
+    from rag.config import CHROMA_PERSIST_DIR, CHROMA_COLLECTION_NAME
+    import chromadb
+
+    Path(CHROMA_PERSIST_DIR).mkdir(parents=True, exist_ok=True)
+
+    client = chromadb.PersistentClient(path=CHROMA_PERSIST_DIR)
+    col = client.get_or_create_collection(
+        name=CHROMA_COLLECTION_NAME,
+        metadata={"description": "PDF document embeddings for RAG", "hnsw:space": "cosine"},
+    )
+
+    if col.count() > 0:
+        return  # already populated
+
+    # Empty → build it
+    st.info("⏳ First-time setup: indexing documents. This may take 1-2 minutes...")
+
+    from rag.embedding.embedding_manager import EmbeddingManager
+    from rag.retrieval.vector_store import VectorStore
+    from rag.ingestion.loaders import process_all_documents
+    from rag.ingestion.splitter import split_documents
+    from rag.ingestion.indexer import index_documents
+
+    em = EmbeddingManager()
+    vs = VectorStore()
+    docs = process_all_documents()
+    chunks = split_documents(docs)
+    index_documents(chunks, em, vs)
+
+    st.success(f"✅ Indexed {len(chunks)} chunks.")
+
+
 @st.cache_resource
 def init_rag():
+    ensure_vector_store()
     embedding_manager = EmbeddingManager()
     vector_store = VectorStore()
     retriever = RAGRetriever(vector_store, embedding_manager)
