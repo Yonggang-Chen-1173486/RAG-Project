@@ -90,8 +90,7 @@ class MultiRetriever:
 def ensure_vector_store():
     """Build the vector store from source documents if the collection is empty.
 
-    This runs on first startup (e.g. on Streamlit Cloud, where the
-    persisted ChromaDB directory is not committed to Git).
+    Runs silently on startup — no user-facing UI is shown.
     """
     from rag.config import CHROMA_PERSIST_DIR, CHROMA_COLLECTION_NAME
     import chromadb
@@ -107,9 +106,7 @@ def ensure_vector_store():
     if col.count() > 0:
         return  # already populated
 
-    # Empty → build it
-    st.info("⏳ First-time setup: indexing documents. This may take 1-2 minutes...")
-
+    # Empty → build it silently
     from rag.embedding.embedding_manager import EmbeddingManager
     from rag.retrieval.vector_store import VectorStore
     from rag.ingestion.loaders import process_all_documents
@@ -121,8 +118,6 @@ def ensure_vector_store():
     docs = process_all_documents()
     chunks = split_documents(docs)
     index_documents(chunks, em, vs)
-
-    st.success(f"✅ Indexed {len(chunks)} chunks.")
 
 
 @st.cache_resource
