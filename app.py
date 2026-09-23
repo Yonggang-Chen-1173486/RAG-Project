@@ -9,6 +9,7 @@ Features:
   - Evaluation dashboard (summary, per-question data, CSV download)
   - Optional user API keys (falls back to server-side defaults)
   - Session-scoped document uploads (isolated per browser session)
+  - Silent auto-ingest on first startup
 
 Run with:
     streamlit run app.py
@@ -57,14 +58,18 @@ def get_secret_or_env(name: str) -> str | None:
     try:
         if name in st.secrets:
             return st.secrets[name]
-    except (FileNotFoundError, KeyError):
+    except Exception:
         pass
     return os.environ.get(name)
 
 
 # Populate environment variables from secrets (if not already set)
-os.environ.setdefault("GROQ_API_KEY", get_secret_or_env("GROQ_API_KEY") or "")
-os.environ.setdefault("GOOGLE_API_KEY", get_secret_or_env("GOOGLE_API_KEY") or "")
+_groq = get_secret_or_env("GROQ_API_KEY")
+_google = get_secret_or_env("GOOGLE_API_KEY")
+if _groq:
+    os.environ["GROQ_API_KEY"] = _groq
+if _google:
+    os.environ["GOOGLE_API_KEY"] = _google
 
 
 # ============================================================
@@ -85,13 +90,12 @@ class MultiRetriever:
 
 
 # ============================================================
-# Cached initialization (main index only — user index is per-session)
+# Silent auto-ingest on first startup
 # ============================================================
 def ensure_vector_store():
     """Build the vector store from source documents if the collection is empty.
 
-    This runs on first startup (e.g. on Streamlit Cloud, where the
-    persisted ChromaDB directory is not committed to Git).
+    Runs silently on startup — only a brief spinner is shown while indexing.
     """
     from rag.config import CHROMA_PERSIST_DIR, CHROMA_COLLECTION_NAME
     import chromadb
@@ -107,24 +111,24 @@ def ensure_vector_store():
     if col.count() > 0:
         return  # already populated
 
-    # Empty → build it
-    st.info("⏳ First-time setup: indexing documents. This may take 1-2 minutes...")
+    # Empty → build it silently
+    with st.spinner("Preparing knowledge base..."):
+        from rag.embedding.embedding_manager import EmbeddingManager
+        from rag.retrieval.vector_store import VectorStore
+        from rag.ingestion.loaders import process_all_documents
+        from rag.ingestion.splitter import split_documents
+        from rag.ingestion.indexer import index_documents
 
-    from rag.embedding.embedding_manager import EmbeddingManager
-    from rag.retrieval.vector_store import VectorStore
-    from rag.ingestion.loaders import process_all_documents
-    from rag.ingestion.splitter import split_documents
-    from rag.ingestion.indexer import index_documents
-
-    em = EmbeddingManager()
-    vs = VectorStore()
-    docs = process_all_documents()
-    chunks = split_documents(docs)
-    index_documents(chunks, em, vs)
-
-    st.success(f"✅ Indexed {len(chunks)} chunks.")
+        em = EmbeddingManager()
+        vs = VectorStore()
+        docs = process_all_documents()
+        chunks = split_documents(docs)
+        index_documents(chunks, em, vs)
 
 
+# ============================================================
+# Cached initialization (main index only — user index is per-session)
+# ============================================================
 @st.cache_resource
 def init_rag():
     ensure_vector_store()
@@ -364,11 +368,6 @@ if page == "💬 Chat":
                 else:
                     error_msg = f"An error occurred: {e}"
                 st.error(error_msg)
-                st.session_state.messages.append({
-                    "role": "assistant",
-                    "content": error_msg,
-                    "sources": [],
-                })
                 st.session_state.messages.append({
                     "role": "assistant",
                     "content": error_msg,
