@@ -61,7 +61,7 @@ DEFAULT_SCORE_THRESHOLD = 0.7
 # ============================================================
 GROQ_MODEL_NAME = "Qwen/Qwen3.8-27B"
 GROQ_TEMPERATURE = 0.1
-GROQ_MAX_TOKENS = 1024
+GROQ_MAX_TOKENS = 800
 
 # ============================================================
 # Logging

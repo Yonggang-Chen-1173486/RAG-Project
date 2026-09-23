@@ -99,7 +99,7 @@ def _get_judge_llm() -> ChatGroq:
                 groq_api_key=api_key,
                 model_name=model_name,
                 temperature=0.0,
-                max_tokens=1000,
+                max_tokens=500,
             )
             llm.invoke([HumanMessage(content="ping")])
             print(f"Judge using model: {model_name}")

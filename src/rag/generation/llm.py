@@ -39,8 +39,29 @@ class GroqLLM:
 
         logger.info("Initialized Groq LLM with model: %s", self.model_name)
 
-    def invoke(self, prompt: str) -> str:
-        """Send a raw prompt string to the LLM and return the reply as a string."""
+    def invoke(self, prompt: str, max_retries: int = 3) -> str:
+        """
+        Send a raw prompt string to the LLM and return the reply as a string.
+
+        Retries on rate-limit (429) errors with exponential backoff.
+        """
+        import time
+
         messages = [HumanMessage(content=prompt)]
-        response = self.llm.invoke(messages)
-        return response.content
+
+        last_error = None
+        for attempt in range(max_retries):
+            try:
+                response = self.llm.invoke(messages)
+                return response.content
+            except Exception as e:
+                err_str = str(e)
+                is_rate_limit = "429" in err_str or "rate" in err_str.lower()
+                if is_rate_limit and attempt < max_retries - 1:
+                    wait = 2 ** attempt   # 2s, 4s
+                    logger.warning("Rate limit hit; retrying in %ds...", wait)
+                    time.sleep(wait)
+                    last_error = e
+                    continue
+                raise
+        raise last_error  # should not reach here

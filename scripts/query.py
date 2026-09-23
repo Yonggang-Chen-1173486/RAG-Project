@@ -73,11 +73,14 @@ def parse_args():
 
 
 def print_result(result: dict, show_sources: bool = True):
+    """Print answer and optionally sources."""
     print(result["answer"])
     if show_sources and result.get("sources"):
         print("\n=== Sources ===")
         for src in result["sources"]:
-            print(f"  [score={src['score']:.4f}] {src['source']} (page {src['page']})")
+            page = src.get("page")
+            page_str = f" (page {page})" if page is not None and page != "unknown" else ""
+            print(f"  [score={src['score']:.4f}] {src['source']}{page_str}")
 
 
 def main():

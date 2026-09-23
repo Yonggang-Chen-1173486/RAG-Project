@@ -62,7 +62,7 @@ class AdvancedRAGPipeline:
                     "source": doc["metadata"].get(
                         "source_file", doc["metadata"].get("source", "unknown")
                     ),
-                    "page": doc["metadata"].get("page", "unknown"),
+                    "page": doc["metadata"].get("page"),   # may be None
                     "score": doc["similarity_score"],
                     "preview": doc["content"][:120] + "...",
                 }
@@ -84,10 +84,14 @@ class AdvancedRAGPipeline:
             answer = self.llm.invoke(prompt)
 
         # 4. Build citations
-        citations = [
-            f"[{i + 1}] {src['source']} (page {src['page']})"
-            for i, src in enumerate(sources)
-        ]
+        def _format_citation(i, src):
+            base = f"[{i + 1}] {src['source']}"
+            page = src.get("page")
+            if page is not None and page != "unknown":
+                return f"{base} (page {page})"
+            return base
+
+        citations = [_format_citation(i, src) for i, src in enumerate(sources)]
         answer_with_citations = (
             answer + "\n\nCitations:\n" + "\n".join(citations)
             if citations
