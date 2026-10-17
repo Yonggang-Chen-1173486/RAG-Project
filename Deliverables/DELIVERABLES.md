@@ -169,6 +169,31 @@ The vector store is derived data and can be regenerated with:
 
 ---
 
+## 6b. Privacy Considerations
+
+The system uses cloud-based AI services, which introduces a data-transmission trade-off that is documented transparently.
+
+### Data flow
+
+| Stage | Service | Data transmitted |
+|-------|---------|------------------|
+| Embedding | Google Gemini API | All document chunks and user queries |
+| Retrieval | ChromaDB (in-container) | None (local) |
+| Generation | Groq API | Retrieved chunks + user query |
+
+### Mitigations
+
+1. **Transparency** — the Streamlit UI displays a warning on the upload panel.
+2. **Provider policies** — Groq's and Google's API terms prohibit training on API data.
+3. **Synthetic corpus** — the main knowledge base (Aventro Motors) is fictional, so no real business data is exposed.
+4. **Optional BYO keys** — users can supply their own API keys via the sidebar to avoid sharing the demo key.
+
+### Known limitation
+
+User-uploaded documents are **sent to external providers** and are **not stored persistently** (Streamlit Cloud does not provide persistent disk on the free tier). Session data is discarded when the container restarts.
+
+---
+
 ## 7. Evaluation Results Summary
 
 From the final run (40 questions × 3 pipelines = 120 runs):

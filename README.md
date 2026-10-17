@@ -369,6 +369,34 @@ See `evaluation/results/report.md` for the full breakdown.
 
 ---
 
+## Privacy Notice
+
+This system uses cloud-based AI services and therefore **does not keep user data fully local**:
+
+| Component | Service | Data sent |
+|-----------|---------|-----------|
+| Embeddings | Google Gemini API | All document chunks and user queries |
+| Answer generation | Groq API | Retrieved chunks and user queries |
+| Vector store | ChromaDB (local / Streamlit Cloud container) | Nothing leaves the machine |
+
+**Implications:**
+
+- Uploaded documents and user queries **leave the local machine** and are processed by Google and Groq.
+- Both providers' API terms of service **prohibit training on API data**.
+- The public demo uses a **free-tier Google AI Studio key**, which may be used by Google to improve its products. Users should **not upload confidential documents**.
+- The main corpus (Aventro Motors documentation) contains only **synthetic data** and is safe to share.
+
+### Design trade-off
+
+A fully local deployment (local embeddings + local LLM via Ollama) would eliminate all external data transmission. However, it was **not chosen** here because:
+
+1. **Accuracy** — local 384-dim MiniLM embeddings score ~75% in-domain accuracy, versus 90% with Gemini.
+2. **Deployability** — a local LLM cannot run on free-tier cloud platforms such as Streamlit Community Cloud, which would prevent public access.
+
+This trade-off favours **accuracy and accessibility** over full data locality — a deliberate decision, not an oversight.
+
+---
+
 ## Roadmap / Future Work
 
 Things intentionally **not** included in the initial refactor, but worth considering:

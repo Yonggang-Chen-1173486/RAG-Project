@@ -266,6 +266,11 @@ if page == "💬 Chat":
     st.sidebar.divider()
     st.sidebar.header("📎 Upload Documents")
 
+    st.sidebar.caption(
+        "⚠️ Uploaded files are sent to Google (embeddings) and Groq (generation) "
+        "to generate answers. Do not upload confidential documents."
+    )
+
     uploaded = st.sidebar.file_uploader(
         "Upload files to query alongside the main corpus",
         type=["pdf", "docx", "pptx", "txt", "md", "html", "htm", "csv"],
